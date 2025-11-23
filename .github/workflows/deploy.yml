@@ -76,7 +76,7 @@ jobs:
       # Alternative deployment method: copy files individually
       # Disabled in favor of zip method above (set if: true to enable)
       - name: Copy code to server
-        if: true
+        if: false
         run: |
           echo "$ \$RUN 'mkdir -p /home/\$USER/web'"
           $RUN "mkdir -p /home/$USER/web"
@@ -90,6 +90,28 @@ jobs:
           $COPY style.css $TARGET:/home/$USER/web
           echo "$ \$RUN 'ls -la /home/\$USER/web'"
           $RUN "ls -la /home/$USER/web"
+
+      - name: Create tarball
+        run: tar -czf site.tar.gz .
+      - name: Copy tarball to server
+        run: |
+          echo "$ $COPY site.tar.gz $TARGET:/home/$USER"
+          $COPY site.tar.gz $TARGET:/home/$USER
+      - name: Deploy on server
+        run: |
+          echo "$ $RUN 'rm -rf /home/$USER/web && mkdir -p /home/$USER/web'"
+          $RUN "rm -rf /home/$USER/web && mkdir -p /home/$USER/web"
+      
+          echo "$ $RUN 'tar -xzf /home/$USER/site.tar.gz -C /home/$USER/web'"
+          $RUN "tar -xzf /home/$USER/site.tar.gz -C /home/$USER/web"
+      
+          echo "$ $RUN 'rm /home/$USER/site.tar.gz'"
+          $RUN "rm /home/$USER/site.tar.gz"
+      
+          echo "$ $RUN 'ls -la /home/$USER/web'"
+          $RUN "ls -la /home/$USER/web"
+
+
       
       # Restart the web server in a persistent screen session
       - name: Start server process
