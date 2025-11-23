@@ -4,7 +4,8 @@ import {
   startGame,
   round,
   combo,
-  gameState
+  gameState,
+  getRound
 } from '../testImports/sketchSetup.js';
 
 import { runner } from './testClass.js';
@@ -22,6 +23,6 @@ runner.test('start in game state', function() {
 });
 
 runner.test('start at round 1', function() {
-    this.assertTrue(round == 1, 'Starts at first round');
+    this.assertTrue(getRound() == 1, 'Starts at first round');
 });
 
