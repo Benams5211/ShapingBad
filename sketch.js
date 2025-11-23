@@ -435,29 +435,29 @@ function drawModes() {
 
   if (!checkboxLight) {
     checkboxLight = createCheckbox("", flashlightFreeze);
-    checkboxLight.position(width / 4 + width/10, height / 4 + height / 5);
     checkboxLight.style("transform", "scale(5)");
   }
+  checkboxLight.position(width / 4 + width/10, height / 4 + height / 5);
 
   if (!checkboxSlow) {
     checkboxSlow = createCheckbox("", slowMoEnabled);
-    checkboxSlow.position(width / 4 + width/10, height / 4 + height / 3);
     checkboxSlow.style("transform", "scale(5)");
   }
+  checkboxSlow.position(width / 4 + width/10, height / 4 + height / 3);
 
   // Three Lamps overlay checkbox
   if (!checkboxLamps) {
     checkboxLamps = createCheckbox("", threeLampsEnabled);
-    checkboxLamps.position(width / 4 + width/10, height / 4 + height * 0.45);
     checkboxLamps.style("transform", "scale(5)");
   }
+  checkboxLamps.position(width / 4 + width/10, height / 4 + height * 0.45);
 
   // Lightning Mode overlay checkbox 
   if (!checkboxLightning) {
     checkboxLightning = createCheckbox("", lightningEnabled);
-    checkboxLightning.position(width / 4 + width/10, height / 4 + height * 0.57);
     checkboxLightning.style("transform", "scale(5)");
   }
+  checkboxLightning.position(width / 4 + width/10, height / 4 + height * 0.57);
 
   if (checkboxSlow.checked()) {slowMoEnabled = true; } else {slowMoEnabled = false;}
 
@@ -1083,21 +1083,7 @@ function mouseInside(btn) {
   else {return false;}
 }
 
-function setup() {
-  setupBuilder();
-  createCanvas(windowWidth, windowHeight);
-
-  director = new Director(events, gameEvents);
-
-  userStartAudio().then(() => {
-    playMenuBGM();
-  });
-
-  fileInput = createFileInput(handleInputFile);
-  fileInput.hide();
-
-  console.log("Version 7.0");//change this each master commit to see when changes happen
-  
+function setupHelper() {
   startButton = {
     x: width / 2 - startBtnImg1.width * startButtonScale / 2,
     y: height / 2 - startBtnImg1.height * startButtonScale / 2 - 15,
@@ -1155,7 +1141,7 @@ function setup() {
     h: menuButton0.height * buttonScale,
     img: menuButton0,
     hoverImg: menuButton1
-};
+  };
   
   easyButton = {
     x: width/2 - easyButton0.width*buttonScale,
@@ -1194,7 +1180,7 @@ function setup() {
     hoverImg: startBtnImg2
   };
   
-    // button set up for color scheme  
+  // button set up for color scheme  
   const btnWidth = 150;
   const btnHeight = 50;
   const baseX = (width / 4 + width / 2)-btnWidth/2;
@@ -1229,7 +1215,6 @@ function setup() {
     label: "Tritanopia"
   };
 
-
   //gameplay ui business
   UILayer = createGraphics(windowWidth, windowHeight * 0.1);
   
@@ -1237,6 +1222,25 @@ function setup() {
   fx = width / 2;
   fy = height / 2;
   rebuildLayer();
+}
+
+function setup() {
+  console.log("Loading123...");
+  setupBuilder();
+  createCanvas(windowWidth, windowHeight);
+
+  director = new Director(events, gameEvents);
+
+  userStartAudio().then(() => {
+    playMenuBGM();
+  });
+
+  fileInput = createFileInput(handleInputFile);
+  fileInput.hide();
+
+  console.log("Version 7.0");//change this each master commit to see when changes happen
+  
+  setupHelper();
 
   // spawn drifting shapes for menu
   spawnMenuShapes();
@@ -1535,45 +1539,12 @@ function drawPauseMenu() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 
-  // Recalculate scaling for the start button
-  if (typeof startBtnImg1 !== "undefined" && startButton) {
-    const scale = 1.5; // your desired scaling factor
-    const scaledW = startBtnImg1.width * scale;
-    const scaledH = startBtnImg1.height * scale;
+  setupHelper();
 
-    startButton.x = width / 2 - scaledW / 2;
-    startButton.y = height / 2;
-    startButton.w = scaledW;
-    startButton.h = scaledH;
-  }
-
-  // For all other buttons — check existence first
-  if (typeof optionsBtnImg1 !== "undefined" && modesButton) {
-    const scaledW = optionsBtnImg1.width * optionsButtonScale;
-    const scaledH = optionsBtnImg1.height * optionsButtonScale;
-    modesButton.x = width / 2 - scaledW / 2;
-    modesButton.y = height / 2 + 100;
-    modesButton.w = scaledW;
-    modesButton.h = scaledH;
-  }
-
-  if (againButton) {
-    againButton.x = width / 2 - 100;
-    againButton.y = height / 2 + 100;
-  }
-
-  if (pauseButton) {
-    pauseButton.x = width / 2 - 100;
-    pauseButton.y = height / 2;
-  }
-
-  if (backToMenuButton) {
-    backToMenuButton.x = width / 2 - 100;
-    backToMenuButton.y = height / 2 + 80;
+  if (gameState === "modes") {
+    drawModes();
   }
 }
-
-
 
 
 
