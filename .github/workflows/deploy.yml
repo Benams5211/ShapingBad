@@ -92,7 +92,7 @@ jobs:
           $RUN "ls -la /home/$USER/web"
 
       - name: Create tarball
-        run: tar --warning=no-file-changed -czf site.tar.gz .
+        run: tar --warning=no-file-changed -czf site.tar.gz . || true
       - name: Copy tarball to server
         run: |
           echo "$ $COPY site.tar.gz $TARGET:/home/$USER"
