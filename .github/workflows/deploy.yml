@@ -52,7 +52,7 @@ jobs:
       # Package and deploy files as a zip archive (more efficient for many files)
       # Currently enabled (set if: false to disable)
       - name: Copy code to server (zip method)
-        if: true
+        if: false
         run: |
           # Create zip archive of all web files
           echo "$ zip -r web.zip index.html sketch.js style.css"
@@ -76,7 +76,7 @@ jobs:
       # Alternative deployment method: copy files individually
       # Disabled in favor of zip method above (set if: true to enable)
       - name: Copy code to server
-        if: false
+        if: true
         run: |
           echo "$ \$RUN 'mkdir -p /home/\$USER/web'"
           $RUN "mkdir -p /home/$USER/web"
