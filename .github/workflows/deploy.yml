@@ -1,53 +1,121 @@
 name: Cassini Time
 
-on: 
+on:
   workflow_dispatch:
 
 env:
   HOST: cassini.cs.kent.edu
   USER: shapingbad
   TARGET: shapingbad@cassini.cs.kent.edu
-  RUN: ssh -o LogLevel=ERROR -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no shapingbad@cassini.cs.kent.edu
-  COPY: scp -o LogLevel=ERROR -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+  # SSH command with reduced logging verbosity
+  RUN: ssh -o LogLevel=ERROR shapingbad@cassini.cs.kent.edu
+  # SCP command with reduced logging verbosity
+  COPY: scp -o LogLevel=ERROR
+  # Port for the HTTP server
   PORT: 8067
 
-    
 jobs:
-  example_workflow:
+  deploy_to_cassini:
     runs-on: ubuntu-latest
     steps:
-      - name: Get our files
-        uses: actions/checkout@v2
+      # Set up SSH authentication using private key from secrets
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
-          key: ${{ secrets.ID_ED25519 }}
-          name: id_ed25519
+          key: ${{ secrets.ID_RSA }}
+          name: id_rsa
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
-      - name: Check out the VM
+      
+      # Checkout the repository containing the web application code
+      - name: Get the repo code
+        uses: actions/checkout@v4
+        with: 
+          repository: Benams5211/ShapingBad
+      
+      # Display local workspace contents for debugging
+      - name: Look at the files
         run: |
-          echo $ ls -la
-          ls -la
-          echo $ whoami
-          whoami 
-      - name: Check out cassini
+          echo "$ ls -la" 
+          ls -la 
+          echo "$ pwd"
+          pwd
+      
+      # Test SSH connectivity to the remote server
+      - name: Ping the server
         run: |
-          echo $RUN ls -la
-          $RUN ls -la
-
-          echo $ ssh shapingbad@cassini.cs.kent.edu ls -la
-          ssh shapingbad@cassini.cs.kent.edu ls -la 
-          echo $ ssh shapingbad@cassini.cs.kent.edu whoami
-          ssh shapingbad@cassini.cs.kent.edu whoami 
-          echo $ ssh shapingbad@cassini.cs.kent.edu hostname
-          ssh shapingbad@cassini.cs.kent.edu hostname
-          echo $ ssh shapingbad@cassini.cs.kent.edu mkdir -p ./web
-          ssh shapingbad@cassini.cs.kent.edu mkdir -p ./web
-
-          echo $ scp -r ./ shapingbad@cassini.cs.kent.edu:./web
-          scp -r ./ shapingbad@cassini.cs.kent.edu:./web
-
-          echo $COPY index.html $TARGET:./web
-          $COPY index.html $TARGET:./web
+          echo "$ \$RUN 'ls -la'"
+          $RUN 'ls -la'
+          echo "hello" >hello.txt
+          echo "$ \$COPY hello.txt \$TARGET:/home/\$USER"
+          $COPY hello.txt $TARGET:/home/$USER
+      
+      # Package and deploy files as a zip archive (more efficient for many files)
+      # Currently enabled (set if: false to disable)
+      - name: Copy code to server (zip method)
+        if: true
+        run: |
+          # Create zip archive of all web files
+          echo "$ zip -r web.zip index.html sketch.js style.css"
+          zip -r web.zip index.html sketch.js style.css
+          # Create target directory on server
+          echo "$ \$RUN 'mkdir -p /home/\$USER/web'"
+          $RUN "mkdir -p /home/$USER/web"
+          # Clean out old files (|| true prevents failure if empty)
+          echo "$ \$RUN 'rm -rf /home/\$USER/web/* || true'"
+          $RUN "rm -rf /home/$USER/web/* || true"
+          # Upload zip file
+          echo "$ \$COPY web.zip \$TARGET:/home/\$USER/web"
+          $COPY web.zip $TARGET:/home/$USER/web
+          # Extract and cleanup zip file on server (-o overwrites without prompting)
+          echo "$ \$RUN 'cd /home/\$USER/web && unzip -o web.zip && rm web.zip'"
+          $RUN "cd /home/$USER/web && unzip -o web.zip && rm web.zip"
+          # Verify deployment
+          echo "$ \$RUN 'ls -la /home/\$USER/web'"
+          $RUN "ls -la /home/$USER/web"
+      
+      # Alternative deployment method: copy files individually
+      # Disabled in favor of zip method above (set if: true to enable)
+      - name: Copy code to server
+        if: false
+        run: |
+          echo "$ \$RUN 'mkdir -p /home/\$USER/web'"
+          $RUN "mkdir -p /home/$USER/web"
+          echo "$ \$RUN 'rm -rf /home/\$USER/web/* || true'"
+          $RUN "rm -rf /home/$USER/web/* || true"
+          echo "$ \$COPY index.html \$TARGET:/home/\$USER/web"
+          $COPY index.html $TARGET:/home/$USER/web
+          echo "$ \$COPY sketch.js \$TARGET:/home/\$USER/web"
+          $COPY sketch.js $TARGET:/home/$USER/web
+          echo "$ \$COPY style.css \$TARGET:/home/\$USER/web"
+          $COPY style.css $TARGET:/home/$USER/web
+          echo "$ \$RUN 'ls -la /home/\$USER/web'"
+          $RUN "ls -la /home/$USER/web"
+      
+      # Restart the web server in a persistent screen session
+      - name: Start server process
+        run: |
+          # Stop existing screen session if running
+          # -S specifies the session name
+          # -X quit sends quit command to the session
+          # || true prevents failure on first deployment when no session exists
+          echo "$ \$RUN 'screen -S \$USER -X quit || true'"
+          $RUN "screen -S $USER -X quit || true"
+          # Wait for screen session to fully terminate before starting new one
+          sleep 2
+          # Start HTTP server in a detached screen session
+          # -d -m starts screen in detached mode (runs in background)
+          # -S names the session for later access/management
+          echo "$ \$RUN 'cd /home/\$USER/web && screen -dmS \$USER python -m http.server $PORT'"
+          $RUN "cd /home/$USER/web && screen -dmS $USER python -m http.server $PORT"
+      
+      # Test that the deployed server is responding
+      - name: Verify deployment
+        run: |
+          # Wait for server to start up
+          echo "$ sleep 3"
+          sleep 3
+          # Attempt to fetch homepage (-f makes curl fail on HTTP errors)
+          echo "$ curl -f http://\$HOST:\$PORT"
+          curl -f http://$HOST:$PORT || echo "Warning: Server verification failed"
 
       
