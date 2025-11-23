@@ -22,8 +22,8 @@ jobs:
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
-          key: ${{ secrets.ID_RSA }}
-          name: id_rsa
+          key: ${{ secrets.ID_ED25519 }}
+          name: id_ed25519
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
       
       # Checkout the repository containing the web application code
