@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////
 //General project vars
 /////////////////////////////////////////////////////
-//sprint 9
+//sprint 11
 
 let gameOver = false;
 let round = 1;
@@ -51,6 +51,9 @@ let threeLampsEnabled = false;
 // lightning options
 let checkboxLightning;
 let lightningEnabled = false;
+//relax
+let relaxMode = true;
+let checkboxRelax;
 
 //combo counter
 let combo = 0;
@@ -431,6 +434,7 @@ function drawModes() {
   text("Slow-Mo Enabled", width/4-width/32, height/2+height/(height*0.0169));
   text("Three Lamps Mode", width/4-width/32, height/2+height/(height*0.0062));
   text("Lightning Mode", width/4-width/32, height/4 + height * 0.57 + 8);
+  text("Relax Mode", width/4-width/32, height/4 + height * 0.69 + 8);
   textFont(pixelFont);
 
   if (!checkboxLight) {
@@ -459,6 +463,13 @@ function drawModes() {
   }
   checkboxLightning.position(width / 4 + width/10, height / 4 + height * 0.57);
 
+  // Lightning Mode overlay checkbox 
+  if (!checkboxRelax) {
+    checkboxRelax = createCheckbox("", relaxMode);
+    checkboxRelax.style("transform", "scale(5)");
+  }
+  checkboxRelax.position(width / 4 + width/10, height / 4 + height * 0.69);
+
   if (checkboxSlow.checked()) {slowMoEnabled = true; } else {slowMoEnabled = false;}
 
   if (checkboxLight.checked()) {flashlightFreeze = true;} else {flashlightFreeze = false;}
@@ -466,6 +477,8 @@ function drawModes() {
   if (checkboxLamps.checked()) { threeLampsEnabled = true; } else { threeLampsEnabled = false; }
 
   if (checkboxLightning.checked()) { lightningEnabled = true; } else { lightningEnabled = false; }
+
+  if (checkboxRelax.checked()) { relaxMode = true; } else { relaxMode = false; }
 
 
   text("Select Color Scheme", width/4+width/2, height/2 - 150);
@@ -1270,16 +1283,26 @@ function nextRound(){
   triggerCurtains();
 
   setTimeout(() => {
-    clearInteractors();
-    if (round%10==0){//boss fight every 10 rounds
-      flashlightEnabled = false;
-      wantedObj = null;
-      stopHardBGM();
-      playBossBGM();
-      //spawnBossInteractors();
-      SpawnBoss(round);
+    if(!relaxMode){
+      clearInteractors();
+      if (round%10==0){//boss fight every 10 rounds
+        flashlightEnabled = false;
+        wantedObj = null;
+        stopHardBGM();
+        playBossBGM();
+        //spawnBossInteractors();
+        SpawnBoss(round);
+      }
+      else if(!isBonusRound){
+        flashlightEnabled = true;
+        stopBonusBGM();
+        playHardBGM();
+        stopBossBGM();
+        spawnInteractors();
+      }
     }
-    else if(!isBonusRound){
+    else{
+      clearInteractors();
       flashlightEnabled = true;
       stopBonusBGM();
       playHardBGM();
@@ -1378,6 +1401,10 @@ function draw() {
       checkboxLightning.remove(); // completely deletes it from the DOM
       checkboxLightning = null;   // clear reference
   }
+  if(gameState != "modes" && checkboxRelax){
+      checkboxRelax.remove(); // completely deletes it from the DOM
+      checkboxRelax = null;   // clear reference
+  }
 
   updateScoreIndicators();
 }
@@ -1390,7 +1417,7 @@ function drawGame() {
 
   // compute time left based on the single startMillis
   // added totalPaused time so that it only counts time spent NOT pause
-  if (gameState !== "pause" && !isBonusRound) {
+  if (gameState !== "pause" && !isBonusRound && !relaxMode) {
   let elapsed = int((millis() - startMillis - totalPausedTime) / 1000);
   times = Timer - elapsed;
   }
