@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////
 //General project vars
 /////////////////////////////////////////////////////
-//sprint 11
+//sprint 9
 
 let gameOver = false;
 let round = 1;
@@ -430,45 +430,45 @@ function drawModes() {
   
   text("Select Modifiers", width/4, height/2 - 150);
   textFont('Arial');
-  text("Flashlight Freeze", width/4-width/32, height/2+height/-(height*0.0282));
-  text("Slow-Mo Enabled", width/4-width/32, height/2+height/(height*0.0169));
-  text("Three Lamps Mode", width/4-width/32, height/2+height/(height*0.0062));
-  text("Lightning Mode", width/4-width/32, height/4 + height * 0.57 + 8);
-  text("Relax Mode", width/4-width/32, height/4 + height * 0.69 + 8);
+  text("Flashlight Freeze", width/4-width/32, height / 4 + height * 0.11);
+  text("Slow-Mo Enabled", width/4-width/32, height / 4 + height * 0.23);
+  text("Three Lamps Mode", width/4-width/32, height / 4 + height * 0.35);
+  text("Lightning Mode", width/4-width/32, height / 4 + height * 0.47);
+  text("Relax Mode", width/4-width/32, height / 4 + height * 0.60);
   textFont(pixelFont);
 
   if (!checkboxLight) {
     checkboxLight = createCheckbox("", flashlightFreeze);
-    checkboxLight.style("transform", "scale(5)");
+    checkboxLight.style("transform", "scale(4)");
   }
-  checkboxLight.position(width / 4 + width/10, height / 4 + height / 5);
+  checkboxLight.position(width / 4 + width/10, height / 4 + height * 0.10);
 
   if (!checkboxSlow) {
     checkboxSlow = createCheckbox("", slowMoEnabled);
-    checkboxSlow.style("transform", "scale(5)");
+    checkboxSlow.style("transform", "scale(4)");
   }
-  checkboxSlow.position(width / 4 + width/10, height / 4 + height / 3);
+  checkboxSlow.position(width / 4 + width/10, height / 4 + height * 0.22);
 
   // Three Lamps overlay checkbox
   if (!checkboxLamps) {
     checkboxLamps = createCheckbox("", threeLampsEnabled);
-    checkboxLamps.style("transform", "scale(5)");
+    checkboxLamps.style("transform", "scale(4)");
   }
-  checkboxLamps.position(width / 4 + width/10, height / 4 + height * 0.45);
+  checkboxLamps.position(width / 4 + width/10, height / 4 + height * 0.34);
 
   // Lightning Mode overlay checkbox 
   if (!checkboxLightning) {
     checkboxLightning = createCheckbox("", lightningEnabled);
-    checkboxLightning.style("transform", "scale(5)");
+    checkboxLightning.style("transform", "scale(4)");
   }
-  checkboxLightning.position(width / 4 + width/10, height / 4 + height * 0.57);
+  checkboxLightning.position(width / 4 + width/10, height / 4 + height * 0.46);
 
   // Lightning Mode overlay checkbox 
   if (!checkboxRelax) {
     checkboxRelax = createCheckbox("", relaxMode);
-    checkboxRelax.style("transform", "scale(5)");
+    checkboxRelax.style("transform", "scale(4)");
   }
-  checkboxRelax.position(width / 4 + width/10, height / 4 + height * 0.69);
+  checkboxRelax.position(width / 4 + width/10, height / 4 + height * 0.58);
 
   if (checkboxSlow.checked()) {slowMoEnabled = true; } else {slowMoEnabled = false;}
 
