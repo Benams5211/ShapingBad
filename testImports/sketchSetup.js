@@ -102,6 +102,10 @@ const localstorageValueKey = "value";
 
 const logoImagePath = "assets/images/gameLogo.png"
 
+// We have to use these accessor functions to set and get the round value during tests.
+export function setRound(value) { round = value; }
+export function getRound() { return round; }
+
 function preload() {
   // optionally load images here
   // menuBgImg = loadImage("menuBackground.png");
@@ -1556,8 +1560,9 @@ export{
   round,
   Timer,
   combo,
-  gameState
+  gameState,
+  localstorageRoundObjectsKey, 
+  localstorageDateKey, 
+  localstorageIDKey, 
+  localstorageValueKey
 }
-
-
-
