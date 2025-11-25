@@ -1,6 +1,8 @@
 name: Cassini Time
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 env:
