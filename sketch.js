@@ -311,18 +311,27 @@ function drawMenu() {
   rect(0, 0, width, height);
   
   // Title text or logo image
+  fill(255); // white
+  textAlign(CENTER, CENTER);
+
   if (logoImg) {
     imageMode(CENTER);
-    image(logoImg, width/2, height/2 - 280);
-    fill(255); // white
-    textAlign(CENTER, CENTER);
+
+    // Scale logo if too wide
+    let logoWidth = logoImg.width;
+    let logoHeight = logoImg.height;
+    const scaleFactor = 2.5;
+    if (logoImg.width * scaleFactor > width) {
+      logoWidth = width / scaleFactor;
+      logoHeight = (logoImg.height / logoImg.width) * logoWidth;
+    }
+
+    image(logoImg, width/2, height/2 - 280, logoWidth, logoHeight);
     textSize(width/35);
     textFont(pixelFont);
     text("THAT TIME I GOT REINCARNATED INTO A NEW WORLD\nAND USED MY LEVEL 100 FLASHLIGHT SKILLS TO FIND THE WANTED SHAPE!", width/2, height/2 - 155);
     imageMode(CORNER);
   } else {
-    fill(255); // white
-    textAlign(CENTER, CENTER);
     textSize(48);
     text("Shape Finder!\nVersion 7.0", width/2, height/2 - 120);
   }
@@ -383,7 +392,11 @@ function drawButton(btn) {
     fill(hovering ? color(120,180,255) : color(80,140,255));
     rect(btn.x, btn.y, btn.w, btn.h, 12);
     fill(255);
-    textSize(24);
+    if (btn.fontSize != undefined) {
+      textSize(btn.fontSize);
+    } else {
+      textSize(24);
+    }
     textAlign(CENTER, CENTER);
     text(btn.label, btn.x + btn.w/2, btn.y + btn.h/2);
   }
@@ -399,7 +412,7 @@ function drawModes() {
   rect(0, 0, width, height);
 
   textAlign(CENTER, CENTER);
-  textSize(40);
+  textSize(width/45);
   fill(255);
   textFont(pixelFont);
   text("Select Difficulty", width/2, height/2 - 300);
@@ -409,18 +422,12 @@ function drawModes() {
   mediumButton.y = height / 2 - 100;
   hardButton.y = height / 2 + 20;
 
-  const buttonScale = 1.4; // smaller scale for start
-  startGameButton.w = startBtnImg1.width * buttonScale +50;
-  startGameButton.h = startBtnImg1.height * buttonScale +50;
-  startGameButton.x = width / 2 - startGameButton.w / 2;
-  startGameButton.y = height / 2 + 160;
-
   drawButton(easyButton);
   drawButton(mediumButton);
   drawButton(hardButton);
 
   // Selected difficulty text
-  textSize(28);
+  textSize(width/50);
   fill(255);
   const titleY = height / 2 - 300;
   text(`Current: ${difficulty.toUpperCase()}`, width / 2, titleY + 60);
@@ -428,7 +435,7 @@ function drawModes() {
   // Draw the Start button (reuse main menu art)
   drawButton(startGameButton);
   
-  text("Select Modifiers", width/4, height/2 - 150);
+  text("Select Modifiers", width/4, height / 4 + height * 0.04);
   textFont('Arial');
   text("Flashlight Freeze", width/4-width/32, height / 4 + height * 0.11);
   text("Slow-Mo Enabled", width/4-width/32, height / 4 + height * 0.23);
@@ -532,10 +539,10 @@ function drawBossCard(x, y, w, h, boss) {
 
     // Boss text
     fill(255);
-    textSize(13);
+    textSize(width/120);
     text(boss.name, x, y + h / 2 - 30);
 
-    textSize(12);
+    textSize(width/130);
     fill(defeated.includes(bossKey) ? color(100, 255, 150) : color(255, 100, 100));
     text(defeated.includes(bossKey) ? "Defeated" : "Undefeated", x, y + h / 2 - 12);
 
@@ -543,15 +550,15 @@ function drawBossCard(x, y, w, h, boss) {
 }
 
 function drawBossCards() {
-    const cardWidth = 160;
-    const cardHeight = 200;
+    const cardWidth = width / 10;
+    const cardHeight = cardWidth * 1.25;
     const paddingX = 30;
     const paddingY = 30;
 
     const totalTop = 4;
     const totalBottom = 4;
 
-    const galleryTopY = height - 360; 
+    const galleryTopY = height * 0.6; 
     const galleryCenterX = width / 2;
 
     const bosses = [
@@ -616,13 +623,13 @@ function drawStats() {
     push();
     fill(255);
     textAlign(CENTER, TOP);
-    textSize(48);
+    textSize(width/50);
     text("Player Stats", width / 2, 20);
     pop();
 
     // --- Session Stats ---
     push();
-    textSize(32);
+    textSize(width/70);
     textAlign(LEFT, TOP);
     fill(200);
     text("Last Game", width / 4, 100);
@@ -630,7 +637,7 @@ function drawStats() {
 
     if (!Stats) Stats = new StatTracker();
 
-    textSize(24);
+    textSize(width/80);
     fill(255);
     let y = 140;
     const lineHeight = 30;
@@ -648,12 +655,12 @@ function drawStats() {
 
     // --- Lifetime Stats ---
     push();
-    textSize(32);
+    textSize(width/70);
     fill(200);
     textAlign(LEFT, TOP);
     text("Lifetime Stats", width / 2, 100);
 
-    textSize(24);
+    textSize(width/80);
     fill(255);
     y = 140;
     const lifetimeX = width / 2;
@@ -929,12 +936,29 @@ function spawnMenuShapes() {
 
 // back button in the corner// honestly just for me to switch back, can be removed
 function drawBackButton() {
+  const btnX = 20;
+  const btnY = 20;
+  let btnW = 120;
+  let btnH = 40;
+
+  if (width < btnW * 20) {
+    btnW = width / 20;
+    btnH = btnW / 3;
+  }
+  
+  // Draw button
   fill(255, 80, 80); // red button
-  rect(20, 20, 120, 40, 8);
+  rect(btnX, btnY, btnW, btnH, 8);
+
+  // Draw centered text
   fill(255);
-  textSize(18);
+  textSize(width / 85);
   textAlign(CENTER, CENTER);
-  text("BACK", 80, 40);
+
+  const centerX = btnX + btnW / 2;
+  const centerY = btnY + btnH / 2;
+
+  text("BACK", centerX, centerY);
 }
 
 // helper
@@ -1097,98 +1121,138 @@ function mouseInside(btn) {
 }
 
 function setupHelper() {
+
+  // Scale menu buttons if too wide
+  let menuBtnWidth = startBtnImg1.width;
+  let menuBtnHeight = startBtnImg1.height;
+  const scaleFactor = 9.5;
+  if (startBtnImg1.width * scaleFactor > width) {
+    console.log("Scaling menu buttons down for screen size");
+    menuBtnWidth = width / scaleFactor;
+    menuBtnHeight = (startBtnImg1.height / startBtnImg1.width) * menuBtnWidth;
+  }
+
+  menuBtnWidth *= startButtonScale;
+  menuBtnHeight *= startButtonScale;
+
   startButton = {
-    x: width / 2 - startBtnImg1.width * startButtonScale / 2,
-    y: height / 2 - startBtnImg1.height * startButtonScale / 2 - 15,
+    x: width / 2 - menuBtnWidth / 2,
+    y: height / 2 - menuBtnHeight / 2 - 15,
     img: startBtnImg1,
     hoverImg: startBtnImg2,
-    w: startBtnImg1.width * startButtonScale,
-    h: startBtnImg1.height * startButtonScale
+    w: menuBtnWidth,
+    h: menuBtnHeight
   };
 
   modesButton = {
-    x: width / 2 - optionsBtnImg1.width * optionsButtonScale / 2,
+    x: width / 2 - menuBtnWidth / 2,
     y: height / 2 + 40,
     img: optionsBtnImg1,
     hoverImg: optionsBtnImg2,
-    w: optionsBtnImg1.width * optionsButtonScale,
-    h: optionsBtnImg1.height * optionsButtonScale
+    w: menuBtnWidth,
+    h: menuBtnHeight
   };
 
-  statsButton = { 
-    x: width / 2 - optionsBtnImg1.width * optionsButtonScale / 2, 
-    y: height/2 + 180, 
-    img: statsButton0, 
-    hoverImg: statsButton1, 
-    w: builderButton0.width * optionsButtonScale, 
-    h: builderButton0.height * optionsButtonScale, 
-
+  statsButton = {
+    x: width / 2 - menuBtnWidth / 2,
+    y: height/2 + 180,
+    img: statsButton0,
+    hoverImg: statsButton1,
+    w: menuBtnWidth,
+    h: menuBtnHeight
   };
 
-  backButton = { x: 30, y: 10, w: 200, h: 60, label: "BACK" };
+  // Scale back button if too wide
+  const backBtnScaleFactor = 5;
+  let backBtnWidth = menuButton0.width * backBtnScaleFactor;
+  let backBtnHeight = menuButton0.height * backBtnScaleFactor;
+  if (menuButton0.width * backBtnScaleFactor * 10 > width) {
+    backBtnWidth = width / backBtnScaleFactor;
+    backBtnHeight = (menuButton0.height / menuButton0.width) * backBtnWidth;
+  }
+
+  const btnW = width / 20;
+  const btnH = btnW / 3;
+  backButton = { x: 30, y: 10, w: btnW, h: btnH, label: "BACK", fontSize: width / 85 };
 
   const buttonScale = 1.8; // adjust as needed
 
   pauseButton = {
     x: 20,
     y: height*0.011299435,
-    w: pauseButton0.width * buttonScale,
-    h: pauseButton0.height * buttonScale,
+    w: backBtnWidth / (backBtnScaleFactor / 2),
+    h: backBtnHeight / (backBtnScaleFactor / 2),
     img: pauseButton0,
     hoverImg: pauseButton1
   };
   
+  const resumeBtnWidth = backBtnWidth / (backBtnScaleFactor/1.6);
+  const resumeBtnHeight = backBtnHeight / (backBtnScaleFactor/1.6);
+
   resumeButton = {
-    x: width/2 - resumeButton0.width*buttonScale/2,
+    x: width/2 - resumeBtnWidth/2,
     y: height/2,
-    w: resumeButton0.width * buttonScale,
-    h: resumeButton0.height * buttonScale,
+    w: resumeBtnWidth,
+    h: resumeBtnHeight,
     img: resumeButton0,
     hoverImg: resumeButton1
   };
-  
-  backToMenuButton = {
-    x: 20, // small margin from left
-    y: 20, // small margin from top
-    w: menuButton0.width * buttonScale,
-    h: menuButton0.height * buttonScale,
-    img: menuButton0,
-    hoverImg: menuButton1
-  };
-  
+
+  if (gameState === "over") {
+    backToMenuButton = {
+      x: 20, // small margin from left
+      y: 20, // small margin from top
+      w: backBtnWidth / (backBtnScaleFactor / 2),
+      h: backBtnHeight / (backBtnScaleFactor / 2),
+      img: menuButton0,
+      hoverImg: menuButton1
+    };
+  } else {
+    backToMenuButton = {
+      x: width/2 - resumeBtnWidth/2,
+      y: height/2 + 80,
+      w: resumeBtnWidth,
+      h: resumeBtnHeight,
+      img: menuButton0,
+      hoverImg: menuButton1
+    };
+  }
+
+  const levelBtnWidth = menuBtnWidth / 1.5;
+  const levelBtnHeight = menuBtnHeight / 1.5;
+
   easyButton = {
-    x: width/2 - easyButton0.width*buttonScale,
+    x: width / 2 - levelBtnWidth / 2,
     y: height/2-height/10,
-    w: easyButton0.width*buttonScale*2,
-    h: easyButton0.height*buttonScale*2,
+    w: levelBtnWidth,
+    h: levelBtnHeight,
     img: easyButton0,
     hoverImg: easyButton1
   };
-  
+
   mediumButton = {
-    x: width/2 - mediumButton0.width*buttonScale,
+    x: width / 2 - levelBtnWidth / 2,
     y: height/2 + height/18,
-    w: mediumButton0.width*buttonScale*2,
-    h: mediumButton0.height*buttonScale*2,
+    w: levelBtnWidth,
+    h: levelBtnHeight,
     img: mediumButton0,
     hoverImg: mediumButton1
   };
-  
+
   hardButton = {
-    x: width/2 - hardButton0.width*buttonScale,
+    x: width / 2 - levelBtnWidth / 2,
     y: height/2 + (height*0.2118644068),
-    w: hardButton0.width*buttonScale*2,
-    h: hardButton0.height*buttonScale*2,
+    w: levelBtnWidth,
+    h: levelBtnHeight,
     img: hardButton0,
     hoverImg: hardButton1
   };
 
-  // Add start button for modes menu (reuse main start image)
-   startGameButton = {
-    x: width / 2 - startBtnImg1.width * startButtonScale / 2,
-    y: height / 2 + (height * 0.4), // below difficulty buttons
-    w: startBtnImg1.width * startButtonScale,
-    h: startBtnImg1.height * startButtonScale,
+  startGameButton = {
+    x: width / 2 - menuBtnWidth / 2,
+    y: height / 2 + 160, // below difficulty buttons
+    w: menuBtnWidth,
+    h: menuBtnHeight,
     img: startBtnImg1,
     hoverImg: startBtnImg2
   };
@@ -1492,13 +1556,20 @@ function drawGame() {
 
   // Apply blinking color
   UILayer.fill(0, 0, 0, blinkAlpha);
-  
+
+  UILayer.textSize(width / 60);
   UILayer.text("Round: " + round + " Combo: "+ combo + " Time: " + times, UILayer.width - 20, UILayer.height /2);
+
   image(UILayer, 0,0);
-  if (wantedObj) wantedObj.render();
+  if (wantedObj) {
+    wantedObj.x = width / 2;
+    wantedObj.y = UILayer.height / 2;
+    wantedObj.render();
+  }
 
   // back button
   //drawBackButton();
+  pauseButton.y = (UILayer.height - pauseButton.h) / 2;
   drawButton(pauseButton);
   // overlay LAST so it renders above darkness/UI
 if (window.FoundEffect) FoundEffect.renderFoundEffectOverlay();
@@ -1548,15 +1619,8 @@ function drawPauseMenu() {
 
   fill(255);
   textAlign(CENTER, CENTER);
-  textSize(48);
+  textSize(width / 50);
   text("Paused", width / 2, height / 2 - 100);
-
-  // center backToMenuButton dynamically
-  const buttonScale = 1.8;
-  backToMenuButton.w = menuButton0.width * buttonScale;
-  backToMenuButton.h = menuButton0.height * buttonScale;
-  backToMenuButton.x = width / 2 - backToMenuButton.w / 2;
-  backToMenuButton.y = height / 2 + 80;
 
   drawButton(resumeButton);
   drawButton(backToMenuButton);
@@ -1572,7 +1636,3 @@ function windowResized() {
     drawModes();
   }
 }
-
-
-
-
