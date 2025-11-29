@@ -822,12 +822,16 @@ class BossCircle extends ClickCircle {
   }
 }
 
+const TAUNT_CHANCE = 0.30;  // 30% taunt chance
 class ScoreDownCircle extends ClickCircle {
   onClick() {
     super.onClick();
-    triggerEZFormationEvent();
+
+    if (Math.random() < TAUNT_CHANCE) {
+      triggerEZFormationEvent();
+    }
+
     Timer -= 5;
-    
 
     combo = 0;
   }
@@ -836,10 +840,13 @@ class ScoreDownCircle extends ClickCircle {
 class ScoreDownRect extends ClickRect {
   onClick() {
     super.onClick();
-    triggerN1FormationEvent();
+
+    if (Math.random() < TAUNT_CHANCE) {
+      triggerN1FormationEvent();
+    }
+
     Timer -= 5;
     
-
     combo = 0;
   }
 }
@@ -847,8 +854,11 @@ class ScoreDownRect extends ClickRect {
 class ScoreDownTri extends ClickTri {
   onClick() {
     super.onClick();
-    
-    triggerLOLFormationEvent();
+
+    if (Math.random() < TAUNT_CHANCE) {
+      triggerLOLFormationEvent();
+    }
+
     Timer -= 5;
 
     combo = 0;
