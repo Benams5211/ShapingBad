@@ -15,6 +15,9 @@ const N1_FORMATION_EVENT = 'screen.N1Formation';
 const EZ_FORMATION_EVENT = 'screen.EZFormation';
 const LOL_FORMATION_EVENT = 'screen.LOLFormation';
 
+// 🔒 global flag: when true, ignore player clicks after win
+window.clickLocked = false;
+
 // event list in case we want to make something do a random event empty rn
 const EVENT_LIST = [BOAT_EVENT, BLACKHOLE_EVENT, ZOMBIE_EVENT, PARTY_EVENT];
 
@@ -873,3 +876,4 @@ function boundsRadius(o) {
   // Fallback if unknown shape — small hit radius
   return 10;
 }
+
