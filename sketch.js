@@ -440,6 +440,27 @@ function drawModes() {
   if (!checkboxLight) {
     checkboxLight = createCheckbox("", flashlightFreeze);
     checkboxLight.style("transform", "scale(4)");
+    // 
+    // When "Flashlight Freeze" is toggled, "Three Lamps Mode" is made unavailable:
+    // 
+    checkboxLight.changed(() => {
+      if (checkboxLight.checked()) {
+        if (checkboxLamps) {
+          // Uncheck "Three Lamps Mode" and disable its input so it cannot be toggled:
+          checkboxLamps.checked(false);
+          // Disable the underlying input element so that "Three Lamps Mode" cannot be selected at all:
+          try { if (checkboxLamps.elt && checkboxLamps.elt.querySelector) checkboxLamps.elt.querySelector('input').disabled = true; } catch(e){}
+          checkboxLamps.style('pointer-events', 'none');
+          checkboxLamps.style('opacity', '0.45');
+        }
+      } else {
+        if (checkboxLamps) {
+          try { if (checkboxLamps.elt && checkboxLamps.elt.querySelector) checkboxLamps.elt.querySelector('input').disabled = false; } catch(e){}
+          checkboxLamps.style('pointer-events', 'auto');
+          checkboxLamps.style('opacity', '1');
+        }
+      }
+    });
   }
   checkboxLight.position(width / 4 + width/10, height / 4 + height * 0.10);
 
@@ -453,8 +474,48 @@ function drawModes() {
   if (!checkboxLamps) {
     checkboxLamps = createCheckbox("", threeLampsEnabled);
     checkboxLamps.style("transform", "scale(4)");
+    // 
+    // When "Three Lamps Mode" is toggled, "Flashlight Freeze" is made unavailable:
+    // 
+    checkboxLamps.changed(() => {
+      if (checkboxLamps.checked()) {
+        if (checkboxLight) {
+          checkboxLight.checked(false);
+          try { if (checkboxLight.elt && checkboxLight.elt.querySelector) checkboxLight.elt.querySelector('input').disabled = true; } catch(e){}
+          checkboxLight.style('pointer-events', 'none');
+          checkboxLight.style('opacity', '0.45');
+        }
+      } else {
+        if (checkboxLight) {
+          try { if (checkboxLight.elt && checkboxLight.elt.querySelector) checkboxLight.elt.querySelector('input').disabled = false; } catch(e){}
+          checkboxLight.style('pointer-events', 'auto');
+          checkboxLight.style('opacity', '1');
+        }
+      }
+    });
   }
   checkboxLamps.position(width / 4 + width/10, height / 4 + height * 0.34);
+
+  // Checks for initial values of "Flashlight Freeze" & "Three Lamps Mode", and then updates their checkboxes based on
+  // their initial values (This way we can set other modes to be enabled at the start of the program and it still works!)
+  if (checkboxLight && checkboxLamps) {
+    if (checkboxLight.checked()) {
+      try { if (checkboxLamps.elt && checkboxLamps.elt.querySelector) checkboxLamps.elt.querySelector('input').disabled = true; } catch (e) {}
+      checkboxLamps.style('pointer-events', 'none');
+      checkboxLamps.style('opacity', '0.45');
+    } else if (checkboxLamps.checked()) {
+      try { if (checkboxLight.elt && checkboxLight.elt.querySelector) checkboxLight.elt.querySelector('input').disabled = true; } catch (e) {}
+      checkboxLight.style('pointer-events', 'none');
+      checkboxLight.style('opacity', '0.45');
+    } else {
+      try { if (checkboxLamps.elt && checkboxLamps.elt.querySelector) checkboxLamps.elt.querySelector('input').disabled = false; } catch (e) {}
+      checkboxLamps.style('pointer-events', 'auto');
+      checkboxLamps.style('opacity', '1');
+      try { if (checkboxLight.elt && checkboxLight.elt.querySelector) checkboxLight.elt.querySelector('input').disabled = false; } catch (e) {}
+      checkboxLight.style('pointer-events', 'auto');
+      checkboxLight.style('opacity', '1');
+    }
+  }
 
   // Lightning Mode overlay checkbox 
   if (!checkboxLightning) {
