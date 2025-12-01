@@ -825,33 +825,36 @@ class BossCircle extends ClickCircle {
 class ScoreDownCircle extends ClickCircle {
   onClick() {
     super.onClick();
-    triggerEZFormationEvent();
-    Timer -= 5;
-    
-
-    combo = 0;
+    // In relax mode we don't taunt the player
+    if (!relaxMode) {
+      triggerEZFormationEvent();
+      Timer -= 5;
+      combo = 0;
+    }
   }
 }
 
 class ScoreDownRect extends ClickRect {
   onClick() {
     super.onClick();
-    triggerN1FormationEvent();
-    Timer -= 5;
-    
-
-    combo = 0;
+    // In relax mode we don't taunt the player
+    if (!relaxMode) {
+      triggerN1FormationEvent();
+      Timer -= 5;
+      combo = 0;
+    }
   }
 }
 
 class ScoreDownTri extends ClickTri {
   onClick() {
     super.onClick();
-    
-    triggerLOLFormationEvent();
-    Timer -= 5;
-
-    combo = 0;
+    // In relax mode we don't taunt the player
+    if (!relaxMode) {
+      triggerLOLFormationEvent();
+      Timer -= 5;
+      combo = 0;
+    }
   }
 }
 
