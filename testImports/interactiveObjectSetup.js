@@ -991,10 +991,8 @@ class TeleportModifier {
     this.chance = chance;
   }
   apply(shape) {
-    if (random() < this.chance) {
-      shape.x = random(width);
-      shape.y = random(height);
-    }
+    // Teleport feature disabled for tests as well. No-op kept for compatibility.
+    return;
   }
 }
 

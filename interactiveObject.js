@@ -996,10 +996,9 @@ class TeleportModifier {
     this.chance = chance;
   }
   apply(shape) {
-    if (random() < this.chance) {
-      shape.x = random(width);
-      shape.y = random(height);
-    }
+    // Teleport feature disabled: previously would randomly relocate shapes.
+    // Keeping the modifier object for compatibility but making it a no-op.
+    return;
   }
 }
 
