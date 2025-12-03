@@ -36,14 +36,24 @@ class StarScoreIndicator extends ScoreIndicator {
     strokeWeight(2);
     textSize(this.radius * 0.8);
 
+       const isRelax =
+      typeof window !== 'undefined' && window.relaxMode === true;
+
     let middle;
-    if (combo < 10)      middle = "+3 sec";
-    else if (combo < 20) middle = "+4 sec";
-    else if (combo < 30) middle = "+5 sec";
-    else if (combo < 40) middle = "+6 sec";
-    else if (combo < 50) middle = "+7 sec";
+
+    if (isRelax) {
+      // Relax mode: no timer, just a simple bonus text
+      middle = "+1";
+    } else {
+      if (combo < 10) middle = "+3 sec";
+      else if (combo < 20) middle = "+4 sec";
+      else if (combo < 30) middle = "+5 sec";
+      else if (combo < 40) middle = "+6 sec";
+      else if (combo < 50) middle = "+7 sec";
+    }
 
     text(middle, 0, 0);
+
     pop();
   }
 
@@ -88,7 +98,11 @@ class CircleBurstScoreIndicator extends ScoreIndicator {
     stroke(0, this.alpha * 0.6);
     strokeWeight(2);
     textSize(this.radius * 0.8);
-    text("-5 sec", 0, 0);
+       const isRelax =
+      typeof window !== 'undefined' && window.relaxMode === true;
+
+    text(isRelax ? "-1" : "-5 sec", 0, 0);
+
     pop();
   }
 }
@@ -161,11 +175,21 @@ class BonusIndicator extends ScoreIndicator {
     strokeWeight(2);
     textSize(this.radius * 0.8);
 
-    let middle = "+ "+ this.timeAdded +"sec";
+      const isRelax =
+      typeof window !== 'undefined' && window.relaxMode === true;
+
+    let middle;
+    if (isRelax) {
+      // Relax mode: no seconds text, just a simple bonus
+      middle = "+1";
+    } else {
+      middle = "+ " + this.timeAdded + " sec";
+    }
 
     text(middle, 0, 0);
     pop();
   }
+
 
   drawStar(x, y, points, outerR, innerR) {
     beginShape();
@@ -180,3 +204,4 @@ class BonusIndicator extends ScoreIndicator {
   }
 
 }
+
