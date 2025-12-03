@@ -247,6 +247,7 @@ class InteractiveObject {
           AudioManager.play('sfxIncorrect', { vol: 1.0 }); // Play "sfxIncorrect" from the Audio Manager:
         } else if (typeof sfxIncorrect !== 'undefined' && sfxIncorrect && typeof sfxIncorrect.play === 'function') {
           sfxIncorrect.play(); // Fallback to basic logic if sound wasn't loaded correctly with the Audio Manager:
+        }
        if (!relaxMode) {
   circleBursts.push(new CircleBurstScoreIndicator(mouseX, mouseY));
 }
@@ -1591,6 +1592,7 @@ function clearInteractors() {
   interactors.length = 0;
   wantedObj == null;
 }
+
 
 
 
