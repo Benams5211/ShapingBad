@@ -52,7 +52,7 @@ let threeLampsEnabled = false;
 let checkboxLightning;
 let lightningEnabled = false;
 //relax
-let relaxMode = true;
+let relaxMode = false;
 let checkboxRelax;
 
 //combo counter
@@ -1572,6 +1572,7 @@ function windowResized() {
     drawModes();
   }
 }
+
 
 
 
