@@ -1421,6 +1421,7 @@ function drawGame() {
   let elapsed = int((millis() - startMillis - totalPausedTime) / 1000);
   times = Timer - elapsed;
   }
+  if(relaxMode) {Timer = 60};
 
 
   // clamp
@@ -1572,6 +1573,7 @@ function windowResized() {
     drawModes();
   }
 }
+
 
 
 
