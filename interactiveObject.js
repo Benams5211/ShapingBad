@@ -251,8 +251,7 @@ class InteractiveObject {
        if (!relaxMode) {
   circleBursts.push(new CircleBurstScoreIndicator(mouseX, mouseY));
 }
-
-      else { //win
+      } else { //win
         if (window.AudioManager && typeof AudioManager.play === 'function') {
           AudioManager.play('sfxCorrect', { vol: 1.0 }); // Play "sfxCorrect" from the Audio Manager:
         } else if (typeof sfxCorrect !== 'undefined' && sfxCorrect && typeof sfxCorrect.play === 'function') {
@@ -1592,6 +1591,7 @@ function clearInteractors() {
   interactors.length = 0;
   wantedObj == null;
 }
+
 
 
 
