@@ -1414,14 +1414,13 @@ function drawGame() {
   fill(0);
   if (window.FoundEffect) FoundEffect.applyCameraShakeIfActive();
 
-  if(relaxMode) {Timer = 60};
+  if(relaxMode) {times = 60};
   // compute time left based on the single startMillis
   // added totalPaused time so that it only counts time spent NOT pause
-  if (gameState !== "pause" && !isBonusRound) {
+  if (gameState !== "pause" && !isBonusRound && !relaxMode) {
   let elapsed = int((millis() - startMillis - totalPausedTime) / 1000);
   times = Timer - elapsed;
   }
-  if(relaxMode) {Timer = 60};
 
 
   // clamp
@@ -1573,6 +1572,7 @@ function windowResized() {
     drawModes();
   }
 }
+
 
 
 
