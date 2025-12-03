@@ -1,3 +1,4 @@
+
 // global list of clickable objects 
 let wantedObj = null;
 let interactors = []; //"window" for module purposes
@@ -228,74 +229,63 @@ class InteractiveObject {
     if (this.isCombined) return;
 
     try {
-      const isWin  = (this instanceof WinRect) || (this instanceof WinCircle) || (this instanceof WinTri);
-      const isBoss = (this instanceof BossCircle);
+      const isWin = (this instanceof WinRect) || (this instanceof WinCircle) || (this instanceof WinTri);
+      const isBoss =  (this instanceof BossCircle);
       const isBonus = (this instanceof Pentagon) || (this instanceof Hexagon) || (this instanceof Octogon);
-
-      if (isBoss) {
-        // Boss kill behavior
+      if(isBoss) {
         playBossKill();
         bossKills.push(new BossKillIndicator(mouseX, mouseY));
-      } else if (isBonus) {
-        // Bonus polygon behavior
-        if (window.AudioManager && typeof AudioManager.play === 'function') {
-          AudioManager.play('sfxCorrect', { vol: 1.0 });
-        } else if (typeof sfxCorrect !== 'undefined' && sfxCorrect && typeof sfxCorrect.play === 'function') {
-          sfxCorrect.play();
-        }
-        bonusStars.push(new BonusIndicator(mouseX, mouseY));
-      } else if (!isWin) {
-        // WRONG SHAPE
-        if (window.AudioManager && typeof AudioManager.play === 'function') {
-          AudioManager.play('sfxIncorrect', { vol: 1.0 });
-        } else if (typeof sfxIncorrect !== 'undefined' && sfxIncorrect && typeof sfxIncorrect.play === 'function') {
-          sfxIncorrect.play();
-        }
-
-        // Only show score indicator when NOT in relax mode
-        if (!relaxMode) {
-          circleBursts.push(new CircleBurstScoreIndicator(mouseX, mouseY));
-        }
-      } else {
-        // CORRECT (WIN) SHAPE
-        if (window.AudioManager && typeof AudioManager.play === 'function') {
-          AudioManager.play('sfxCorrect', { vol: 1.0 });
-        } else if (typeof sfxCorrect !== 'undefined' && sfxCorrect && typeof sfxCorrect.play === 'function') {
-          sfxCorrect.play();
-        }
-
-        // Only show score indicator when NOT in relax mode
-        if (!relaxMode) {
-          stars.push(new StarScoreIndicator(mouseX, mouseY));
-        }
-
-        // Celebrate the correct shape (color + geometry)
-        if (window.FoundEffect && typeof window.FoundEffect.triggerFoundEffect === 'function') {
-          const col = Array.isArray(this.fillCol) ? this.fillCol : [255, 215, 0];
-
-          // Guess shape type from the class name of the clicked object
-          const ctorName = (this.constructor && this.constructor.name) || '';
-          let shapeType = 'circle';
-          if (ctorName.includes('Rect')) {
-            shapeType = 'rect';
-          } else if (ctorName.includes('Tri')) {
-            shapeType = 'tri';
-          }
-
-          // Size hint so the overlay matches the shape size
-          const sizeHint = (typeof this.getBoundsRadius === 'function')
-            ? this.getBoundsRadius()
-            : 30;
-
-          window.FoundEffect.triggerFoundEffect(this.x, this.y, col, shapeType, sizeHint);
-        }
       }
+      else if(isBonus){
+        if (window.AudioManager && typeof AudioManager.play === 'function') {
+          AudioManager.play('sfxCorrect', { vol: 1.0 }); // Play "sfxCorrect" from the Audio Manager:
+        } else if (typeof sfxCorrect !== 'undefined' && sfxCorrect && typeof sfxCorrect.play === 'function') {
+          sfxCorrect.play(); // Fallback to basic logic if sound wasn't loaded correctly with the Audio Manager:
+        }
+        bonusStars.push(new BonusIndicator(mouseX, mouseY));}
+      else if (!isWin) { // If "isWin" was not one of the "Win" shapes:
+        if (window.AudioManager && typeof AudioManager.play === 'function') {
+          AudioManager.play('sfxIncorrect', { vol: 1.0 }); // Play "sfxIncorrect" from the Audio Manager:
+        } else if (typeof sfxIncorrect !== 'undefined' && sfxIncorrect && typeof sfxIncorrect.play === 'function') {
+          sfxIncorrect.play(); // Fallback to basic logic if sound wasn't loaded correctly with the Audio Manager:
+        }
+        circleBursts.push(new CircleBurstScoreIndicator(mouseX, mouseY));
+      }
+      else { //win
+        if (window.AudioManager && typeof AudioManager.play === 'function') {
+          AudioManager.play('sfxCorrect', { vol: 1.0 }); // Play "sfxCorrect" from the Audio Manager:
+        } else if (typeof sfxCorrect !== 'undefined' && sfxCorrect && typeof sfxCorrect.play === 'function') {
+          sfxCorrect.play(); // Fallback to basic logic if sound wasn't loaded correctly with the Audio Manager:
+        }
+        stars.push(new StarScoreIndicator(mouseX, mouseY));
+      // Celebrate the correct shape (color + geometry)
+if (window.FoundEffect && typeof window.FoundEffect.triggerFoundEffect === 'function') {
+  const col = Array.isArray(this.fillCol) ? this.fillCol : [255, 215, 0];
 
+  // Guess shape type from the class name of the clicked object
+  const ctorName = (this.constructor && this.constructor.name) || '';
+  let shapeType = 'circle';
+  if (ctorName.includes('Rect')) {
+    shapeType = 'rect';
+  } else if (ctorName.includes('Tri')) {
+    shapeType = 'tri';
+  }
+
+  // Size hint so the overlay matches the shape size
+  const sizeHint = (typeof this.getBoundsRadius === 'function')
+    ? this.getBoundsRadius()
+    : 30;
+
+  window.FoundEffect.triggerFoundEffect(this.x, this.y, col, shapeType, sizeHint);
+}
+
+
+        
+      }
       gameEvents.Fire("Clicked", isWin);
     } catch (e) {
-      console.warn('Error handling click in InteractiveObject:', e);
+      console.warn('Could not play "incorrect.mp3"!', e);
     }
-
   }
 
   deleteSelf() {
@@ -833,46 +823,39 @@ class BossCircle extends ClickCircle {
   }
 }
 
-const TAUNT_CHANCE = 0.30;  // 30% taunt chance
 class ScoreDownCircle extends ClickCircle {
   onClick() {
     super.onClick();
-
-    if (Math.random() < TAUNT_CHANCE && !relaxMode) {
+    // In relax mode we don't taunt the player
+    if (!relaxMode) {
       triggerEZFormationEvent();
+      Timer -= 5;
+      combo = 0;
     }
-
-    Timer -= 5;
-
-    combo = 0;
   }
 }
 
 class ScoreDownRect extends ClickRect {
   onClick() {
     super.onClick();
-
-    if (Math.random() < TAUNT_CHANCE !relaxMode) {
+    // In relax mode we don't taunt the player
+    if (!relaxMode) {
       triggerN1FormationEvent();
+      Timer -= 5;
+      combo = 0;
     }
-
-    Timer -= 5;
-    
-    combo = 0;
   }
 }
 
 class ScoreDownTri extends ClickTri {
   onClick() {
     super.onClick();
-
-    if (Math.random() < TAUNT_CHANCE && !relaxMode) {
+    // In relax mode we don't taunt the player
+    if (!relaxMode) {
       triggerLOLFormationEvent();
+      Timer -= 5;
+      combo = 0;
     }
-
-    Timer -= 5;
-
-    combo = 0;
   }
 }
 
@@ -1608,10 +1591,6 @@ function clearInteractors() {
   interactors.length = 0;
   wantedObj == null;
 }
-
-
-
-
 
 
 
