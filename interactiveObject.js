@@ -833,39 +833,46 @@ class BossCircle extends ClickCircle {
   }
 }
 
+const TAUNT_CHANCE = 0.30;  // 30% taunt chance
 class ScoreDownCircle extends ClickCircle {
   onClick() {
     super.onClick();
-    // In relax mode we don't taunt the player
-    if (!relaxMode) {
+
+    if (Math.random() < TAUNT_CHANCE && !relaxMode) {
       triggerEZFormationEvent();
-      Timer -= 5;
-      combo = 0;
     }
+
+    Timer -= 5;
+
+    combo = 0;
   }
 }
 
 class ScoreDownRect extends ClickRect {
   onClick() {
     super.onClick();
-    // In relax mode we don't taunt the player
-    if (!relaxMode) {
+
+    if (Math.random() < TAUNT_CHANCE !relaxMode) {
       triggerN1FormationEvent();
-      Timer -= 5;
-      combo = 0;
     }
+
+    Timer -= 5;
+    
+    combo = 0;
   }
 }
 
 class ScoreDownTri extends ClickTri {
   onClick() {
     super.onClick();
-    // In relax mode we don't taunt the player
-    if (!relaxMode) {
+
+    if (Math.random() < TAUNT_CHANCE && !relaxMode) {
       triggerLOLFormationEvent();
-      Timer -= 5;
-      combo = 0;
     }
+
+    Timer -= 5;
+
+    combo = 0;
   }
 }
 
