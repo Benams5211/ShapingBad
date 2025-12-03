@@ -247,16 +247,20 @@ class InteractiveObject {
           AudioManager.play('sfxIncorrect', { vol: 1.0 }); // Play "sfxIncorrect" from the Audio Manager:
         } else if (typeof sfxIncorrect !== 'undefined' && sfxIncorrect && typeof sfxIncorrect.play === 'function') {
           sfxIncorrect.play(); // Fallback to basic logic if sound wasn't loaded correctly with the Audio Manager:
-        }
-        circleBursts.push(new CircleBurstScoreIndicator(mouseX, mouseY));
-      }
+       if (!relaxMode) {
+  circleBursts.push(new CircleBurstScoreIndicator(mouseX, mouseY));
+}
+
       else { //win
         if (window.AudioManager && typeof AudioManager.play === 'function') {
           AudioManager.play('sfxCorrect', { vol: 1.0 }); // Play "sfxCorrect" from the Audio Manager:
         } else if (typeof sfxCorrect !== 'undefined' && sfxCorrect && typeof sfxCorrect.play === 'function') {
           sfxCorrect.play(); // Fallback to basic logic if sound wasn't loaded correctly with the Audio Manager:
         }
-        stars.push(new StarScoreIndicator(mouseX, mouseY));
+        if (!relaxMode) {
+  stars.push(new StarScoreIndicator(mouseX, mouseY));
+}
+
       // Celebrate the correct shape (color + geometry)
 if (window.FoundEffect && typeof window.FoundEffect.triggerFoundEffect === 'function') {
   const col = Array.isArray(this.fillCol) ? this.fillCol : [255, 215, 0];
@@ -1587,6 +1591,7 @@ function clearInteractors() {
   interactors.length = 0;
   wantedObj == null;
 }
+
 
 
 
