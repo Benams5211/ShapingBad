@@ -1271,7 +1271,6 @@ function playMode() {
     obj.update()
   }
   for (const boss of activeBosses) {
-    console.log("Drawing:", boss.name, boss.alive);
     boss.drawUI();
   }
   events.update();
@@ -1284,6 +1283,7 @@ function nextRound(){
 
   setTimeout(() => {
     if(!relaxMode){
+      clearBosses();
       clearInteractors();
       if (round%10==0){//boss fight every 10 rounds
         flashlightEnabled = false;
@@ -1313,6 +1313,7 @@ function nextRound(){
 }
 
 function bonusRound(){
+  flashlightEnabled = true;
   triggerCurtains();
   clearInteractors();
 

@@ -29,6 +29,7 @@ class Director {
 
   makeDecision() {
     if (this.events.isActive('DIRECTOR_EVENT')) return;
+    if (wantedObj === null) return; // Simple check for boss round (no wantedObj)
 
 
     if (this.difficultyScore > 40) {

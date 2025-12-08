@@ -1258,7 +1258,6 @@ function playMode() {
     obj.update()
   }
   for (const boss of activeBosses) {
-    console.log("Drawing:", boss.name, boss.alive);
     boss.drawUI();
   }
   events.update();

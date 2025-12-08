@@ -1406,7 +1406,7 @@ function SpawnBoss(h){
     } else if (difficulty === "hard") {
       r = 35;        // smaller shapes
     }
-    let randomBossChoice = int(random(1,6));
+    let randomBossChoice = int(random(5,5));
     if (delozierMode) randomBossChoice = 6;
     let preview
 

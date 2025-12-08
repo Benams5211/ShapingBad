@@ -33,6 +33,7 @@ function drawBossUI(name, hp, maxHp, x, y) {
 }
 
 function clearBosses() {
+    console.log("Clear bosses called");
     for (const boss of activeBosses) {
         boss.forceClear();
     }
@@ -254,15 +255,15 @@ class RainbowGem extends BaseBoss {
             if (!this.ownsShape(shape)) return;
             this.takeDamage(1);
         });
-        setTimeout(() => {
-            if (this.alive) this.onDeath(true);
-        }, 10000)
+        
     }
     onDeath(timedOut = false) {
         
         this.alive = false;
-        bonusStars.push(new BonusIndicator(mouseX, mouseY, 3));
-        if (!timedOut) Timer += 3;
+        if (!timedOut) {
+            bonusStars.push(new BonusIndicator(mouseX, mouseY, 3));
+            Timer += 3;
+        }
 
         super.onDeath();
     }
@@ -278,7 +279,7 @@ class Heartagon extends BaseBoss {
         super(
             "The Heartagon",
             "./assets/combinedObjects/heartagon.json",
-            1000, // maxHealth
+            500, // maxHealth
             150,
             15,
         );
@@ -442,7 +443,7 @@ class Flaregon extends BaseBoss {
             "./assets/combinedObjects/flaregon.json",
             1000, // maxHealth
             150,
-            10,
+            15,
         );
         this.formationExists = false;
         this.sunExists = false;
@@ -547,11 +548,10 @@ class WaterMinion extends BaseBoss {
             "./assets/combinedObjects/water_minion.json",
             3, // maxHealth
             120,
-            20,
+            10,
         );
         gameEvents.OnEvent("waterMinionHit", (balloonHit) => {
             if (!this.alive) return;
-            print(balloonHit);
             if (typeof balloonHit === 'string')
                 this.takeDamage(1);
             else {
