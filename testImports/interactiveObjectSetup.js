@@ -1350,7 +1350,7 @@ function SpawnBoss(h){
   const movement = {
       enabled: true,
       lerpStrength: 0.05,
-      velocityLimit: (5+h),
+      velocityLimit: (constrain(5+h/2, 5, 15)),
       switchRate: 15, 
     };
 

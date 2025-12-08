@@ -376,10 +376,11 @@ function easeOutQuad(x) {
 
 
 function drawFlashlightOverlay () {
+  console.log("FPS: " + constrain(frameRate(), 1, 60));
   const mx = isFinite(mouseX) ? mouseX : width / 2;
   const my = isFinite(mouseY) ? mouseY : height / 2;
-  fx = lerp(fx, mx, 0.2); //what is lerp
-  fy = lerp(fy, my, 0.2);
+  fx = lerp(fx, mx, 1); //what is lerp
+  fy = lerp(fy, my, 1);
 
   const dx = fx - coverW / 2;
   const dy = fy - coverH / 2;
