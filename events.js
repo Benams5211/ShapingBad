@@ -175,6 +175,7 @@ function setupGameEvents() {
 }
 
 function triggerBlackHoleEvent(ms = 3000, atX = random(width), atY = random(height), deleteOnEnd = false) {
+    if(relaxMode) {return;}
   const freezeForever = new FreezeModifier({ chance: 1, duration: 1 }); // freeze the hole
 
   // Save original states to restore later
@@ -272,6 +273,7 @@ function triggerBlackHoleEvent(ms = 3000, atX = random(width), atY = random(heig
 }
 
 function triggerN1FormationEvent(totalDuration = 6000) {
+    if(relaxMode) {return;}
   if (formationDirector.active) formationDirector.cancel();
 
   events.start(N1_FORMATION_EVENT, totalDuration, {
@@ -314,6 +316,7 @@ function triggerN1FormationEvent(totalDuration = 6000) {
 
 
 function triggerLOLFormationEvent(totalDuration = 9000) {
+    if(relaxMode) {return;}
   if (formationDirector.active) formationDirector.cancel();
 
   events.start(LOL_FORMATION_EVENT, totalDuration, {
@@ -373,6 +376,7 @@ function triggerLOLFormationEvent(totalDuration = 9000) {
 
 
 function triggerEZFormationEvent(totalDuration = 6000) {
+    if(relaxMode) {return;}
   if (formationDirector.active) formationDirector.cancel();
   events.start(EZ_FORMATION_EVENT, totalDuration, {
     onStart: () => {
@@ -413,6 +417,7 @@ function triggerEZFormationEvent(totalDuration = 6000) {
 }
 
 function triggerPartyEvent(duration = 6000) {
+    if(relaxMode) {return;}
   const affected = [];
 
   events.start(PARTY_EVENT, duration, {
@@ -470,6 +475,7 @@ function triggerPartyEvent(duration = 6000) {
 }
 
 function triggerZombieEvent(ms=10000, zombieCount = 50) {
+    if(relaxMode) {return;}
   let zombies = [];
   const ZOMBIE_COL = [0, 210, 0];
 
@@ -652,6 +658,7 @@ function triggerCurtains(ms = 1500) {
 }
 
 function triggerMimicEvent(duration = 8000, cloneCount = 8) {
+    if(relaxMode) {return;}
   const clones = [];
 
   events.start(MIMIC_EVENT, duration, {
@@ -729,6 +736,7 @@ function triggerMimicEvent(duration = 8000, cloneCount = 8) {
 }
 
 function triggerWarning(ms = 2000) {
+    if(relaxMode) {return;}
   events.start(WARNING_EVENT, ms, {
     onStart: () => {
       console.log("WARNING_EVENT started");
@@ -740,7 +748,7 @@ function triggerWarning(ms = 2000) {
 }
 
 function triggerBoatLines(ms = 10000) {
-
+if(relaxMode) {return;}
   const laneHeights    = [height * 0.17, height * 0.50, height * 0.83];
   const laneDirections = [+1, -1, +1];
 
@@ -825,6 +833,7 @@ function triggerBoatLines(ms = 10000) {
 }
 
 function updateAndRenderWarning() {
+    if(relaxMode) {return;}
   // message could be changed with parameters but im lazy
   const msg = "WARNING INCOMING ";
   // px per second
@@ -847,6 +856,7 @@ function updateAndRenderWarning() {
 }
 
 function triggerWarningBoatLines(warningMs = 2000, boatLinesMs = 15000) {
+    if(relaxMode) {return;}
   events.start(WARNING_BOAT_EVENT, warningMs, {
     onStart: () => {
       console.log("WARNING_BOAT_EVENT started");
@@ -876,4 +886,5 @@ function boundsRadius(o) {
   // Fallback if unknown shape — small hit radius
   return 10;
 }
+
 
