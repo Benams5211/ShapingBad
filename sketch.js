@@ -1280,6 +1280,9 @@ let isBonusRound = false;
 //add boss fights and round events here
 function nextRound(){
   triggerCurtains();
+  // Bandaid fix: Cancel blackhole event on new round if active, do not runOnEnd
+  // Hopefully clearInteractors() will handle the removal of the blackhole before spawning the round's interactors
+  if (events.isActive(BLACKHOLE_EVENT)) {events.cancel(BLACKHOLE_EVENT, false)}
 
   setTimeout(() => {
     if(!relaxMode){
